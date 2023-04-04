@@ -4,16 +4,17 @@
  * which Chemdoc77 slightly modified.
  */
 
+// TODO 2023.04.03 currently the loop doesn't render anything...loopCount
 
+#include "config.h"           // defines NUM_LED; used here and also in our custom library, CustomCRGBArray
+
+#include "CustomCRGBArray.h"
 #include <FastLED.h>
 
 #define LED_PIN 2 
-#define CHIPSET NEOPIXEL 
-#define NUM_LEDS 1024
 
 #define BRIGHTNESS 10
-CRGB leds[NUM_LEDS];
-
+CustomCRGBArray<NUM_LEDS> leds;
 
 byte ledsX[NUM_LEDS][3];
 boolean RAINBOWs = false;
@@ -25,30 +26,23 @@ byte colorTIP = 0;
 byte meteorLENGTH;
 byte loopCount = 1;    //low number loop counter
 
-
-
 void setup() {
+  Serial.begin(115200);  // DEBUGGERY
 
-delay(1000); // sanity delay
-FastLED.addLeds<CHIPSET, LED_PIN>(leds, NUM_LEDS);
-FastLED.setBrightness( BRIGHTNESS );
-FastLED.setMaxPowerInVoltsAndMilliamps(5,1500);
- set_max_power_indicator_LED(13);
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
+  delay(1000); // sanity delay
+  FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
+  FastLED.setBrightness( BRIGHTNESS );
+  FastLED.setMaxPowerInVoltsAndMilliamps(5,1500);
+  set_max_power_indicator_LED(13);
+  fill_solid(leds, NUM_LEDS, CRGB::Red);
   FastLED.show();
-
 }
 
-//============================================
 void loop() {
-  
-meteorShower();
-
+  meteorShower();
 }
 
-//=============== Functions ==============
-
-void meteorShower(){
+void meteorShower() {
   //hue master
   hue++;  
  
