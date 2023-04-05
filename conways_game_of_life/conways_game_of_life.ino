@@ -8,7 +8,7 @@
 CustomCRGBArray<NUM_LEDS> leds;
 const int ROWS = 32;
 const int COLS = 32;
-const int MAX_GEN = 100;
+const int MAX_GEN = 200;
 int remaining_showcase_count;
 bool board[ROWS][COLS];
 int prevBoard = -1;
@@ -109,7 +109,7 @@ bool shouldKeepGoing(int gen) {
 
 void setup() {
   FastLED.addLeds<NEOPIXEL,DATA_PIN>(leds, NUM_LEDS);  // initializes the FastLED library
-  FastLED.setBrightness(25);
+  FastLED.setBrightness(15);
   FastLED.clear(true);
 }
 
