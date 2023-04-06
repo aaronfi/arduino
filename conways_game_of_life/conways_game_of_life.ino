@@ -16,6 +16,7 @@ int prevPrevBoard[ROWS];
 
 void initBoard(bool board[][COLS])
 {
+    srand(analogRead(A0));
     for (int i = 0; i < ROWS; i++) {
         prevBoard[i] = -1;
         prevPrevBoard[i] = -1;
