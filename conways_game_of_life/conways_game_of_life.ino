@@ -11,17 +11,20 @@ const int COLS = 32;
 const int MAX_GEN = 200;
 int remaining_showcase_count;
 bool board[ROWS][COLS];
-int prevBoard = -1;
-int prevPrevBoard = -1;
+int prevBoard[ROWS];
+int prevPrevBoard[ROWS];
 
 void initBoard(bool board[][COLS])
 {
     for (int i = 0; i < ROWS; i++) {
+        prevBoard[i] = -1;
+        prevPrevBoard[i] = -1;
+        
         for (int j = 0; j < COLS; j++) {
             board[i][j] = rand() % 2;
         }
     }
-    remaining_showcase_count = 15;
+    remaining_showcase_count = 100;
 }
 
 void printBoard(bool board[][COLS])
@@ -55,11 +58,11 @@ int countNeighbors(bool board[][COLS], int row, int col)
 
 void updateBoard(bool board[][COLS])  // Update the game board for the next generation
 {
-    prevPrevBoard = prevBoard;
-    prevBoard = asInt(board);
-
     bool newBoard[ROWS][COLS];
     for (int i = 0; i < ROWS; i++) {
+        prevPrevBoard[i] = prevBoard[i];
+        prevBoard[i] = toInt(board[i]);
+
         for (int j = 0; j < COLS; j++) {
             int neighbors = countNeighbors(board, i, j);
             if (board[i][j]) {
@@ -86,25 +89,40 @@ void updateBoard(bool board[][COLS])  // Update the game board for the next gene
     }
 }
 
-int asInt(bool board[][COLS]) {
-    int value = 0;
-    for (int i = 0; i < ROWS; i++) {
-        for (int j = 0; j < COLS; j++) {
-            value = (value << 1) | board[i][j];
-        }
+int toInt(bool arr[COLS]) {
+    int packed = 0;
+    for(int i = 0; i < 32; i++) {
+        packed |= (arr[i] << i);
     }
-    return value;
+
+    return packed;
 }
 
 bool shouldKeepGoing(int gen) {
-  // int currVal = asInt(board);
+  bool hasImmediateRepeat = true;
+  for (int i = 0; i < ROWS; i++) {
+    int curr = toInt(board[i]);
+    if (curr != prevBoard[i]) {
+      hasImmediateRepeat = false;
+      break;
+    }
+  }
 
-  // if (currVal == prevBoard || currVal == prevPrevBoard) {
-  //   remaining_showcase_count--;
-  //   return (remaining_showcase_count >= 0);
-  // }
+  bool hasDelayedRepeat = true;
+  for (int i = 0; i < ROWS; i++) {
+    int curr = toInt(board[i]);
+    if (curr != prevPrevBoard[i]) {
+      hasDelayedRepeat = false;
+      break;
+    }
+  }
 
-  return gen < MAX_GEN;
+  if (hasDelayedRepeat || hasImmediateRepeat) {
+    remaining_showcase_count--;
+    return (remaining_showcase_count > 0);
+  } else {
+    return true; // gen < MAX_GEN;
+  }
 }
 
 void setup() {
