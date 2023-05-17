@@ -13,6 +13,9 @@ int remaining_showcase_count;
 bool board[ROWS][COLS];
 int prevBoard[ROWS];
 int prevPrevBoard[ROWS];
+int animationFrameRate = 6;  // Frame rate of the color animation (x times faster than Conway's Game of Life)
+
+CRGBPalette16 colorPalette;  // Color palette for the independent animation
 
 void initBoard(bool board[][COLS])
 {
@@ -25,7 +28,7 @@ void initBoard(bool board[][COLS])
             board[i][j] = rand() % 2;
         }
     }
-    remaining_showcase_count = 100;
+    remaining_showcase_count = 125;
 }
 
 void printBoard(bool board[][COLS])
@@ -34,7 +37,8 @@ void printBoard(bool board[][COLS])
         for (int j = 0; j < COLS; j++) {
             int led_index = i + j * 32;
             if (board[i][j]) {
-                leds[led_index] = HOT_PINK;
+                leds[led_index] = ColorFromPalette(colorPalette, (i * 8) + (millis() / 10), 255);
+                // leds[led_index] = HOT_PINK;
             } else {
                 leds[led_index] = CRGB::Black;
             }
@@ -128,16 +132,24 @@ bool shouldKeepGoing(int gen) {
 
 void setup() {
   FastLED.addLeds<NEOPIXEL,DATA_PIN>(leds, NUM_LEDS);  // initializes the FastLED library
-  FastLED.setBrightness(15);
+  FastLED.setBrightness(5);
   FastLED.clear(true);
+
+  // Set up the color palette for the independent animation
+  colorPalette = RainbowColors_p;  // PartyColors_p;  // ForestColors_p;  // CloudColors_p;  // OceanColors_p;  // RainbowColors_p; 
 }
 
 void loop () {
     initBoard(board);
     for (int gen = 0; shouldKeepGoing(gen); gen++) {
-        printBoard(board);
-        FastLED.show();
+        for (int countdown = animationFrameRate; countdown >= 0; countdown--) {
+          printBoard(board);
+          FastLED.show();
+          // FastLED.delay(1000 / animationFrameRate); // Adjust the delay based on the animation frame rate
+        }
+        
         updateBoard(board);
-        FastLED.delay(100);
+        // FastLED.delay(100);
+        // FastLED.delay(1000 / animationFrameRate); // Adjust the delay based on the animation frame rate
     }
 }
