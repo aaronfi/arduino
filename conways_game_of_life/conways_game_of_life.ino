@@ -13,7 +13,7 @@ int remaining_showcase_count;
 bool board[ROWS][COLS];
 int prevBoard[ROWS];
 int prevPrevBoard[ROWS];
-int animationFrameRate = 6;  // Frame rate of the color animation (x times faster than Conway's Game of Life)
+int animationFrameRate = 5;  // Frame rate of the color animation (x times faster than Conway's Game of Life)
 
 CRGBPalette16 colorPalette;  // Color palette for the independent animation
 
@@ -37,7 +37,7 @@ void printBoard(bool board[][COLS])
         for (int j = 0; j < COLS; j++) {
             int led_index = i + j * 32;
             if (board[i][j]) {
-                leds[led_index] = ColorFromPalette(colorPalette, (i * 8) + (millis() / 10), 255);
+                leds[led_index] = ColorFromPalette(colorPalette, (i * 8) + (millis() / 7), 255);
                 // leds[led_index] = HOT_PINK;
             } else {
                 leds[led_index] = CRGB::Black;
