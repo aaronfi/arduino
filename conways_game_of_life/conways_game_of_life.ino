@@ -31,17 +31,17 @@ void initBoard(bool board[][COLS])
     remaining_showcase_count = 125;
 }
 
+
+float speed = 8;
+bool accelerating = false;
+
 void printBoard(bool board[][COLS])
 {
+    uint8_t colorOffset =  millis() / speed;
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
             int led_index = i + j * 32;
-            if (board[i][j]) {
-                leds[led_index] = ColorFromPalette(colorPalette, (i * 8) + (millis() / 7), 255);
-                // leds[led_index] = HOT_PINK;
-            } else {
-                leds[led_index] = CRGB::Black;
-            }
+            leds[led_index] = !board[i][j] ? ColorFromPalette(colorPalette, (i*8) + colorOffset, 255) : CRGB::Black;
         }
     }
 }
@@ -141,8 +141,31 @@ void setup() {
 
 void loop () {
     initBoard(board);
+
     for (int gen = 0; shouldKeepGoing(gen); gen++) {
         for (int countdown = animationFrameRate; countdown >= 0; countdown--) {
+ 
+        if (accelerating) {
+          if (speed >= 6 && speed <= 10) {
+            speed += 0.5;
+          } else {
+            speed += 0.1;
+          }
+          
+          if (speed >= 16) {
+            accelerating = false;
+          }
+        } else {
+          if (speed >= 6 && speed <= 10) {
+            speed -= 0.5;
+          } else {
+            speed -= 0.1;
+          }
+          if (speed <= 1) {
+            accelerating = true;
+          }
+        }
+
           printBoard(board);
           FastLED.show();
           // FastLED.delay(1000 / animationFrameRate); // Adjust the delay based on the animation frame rate
