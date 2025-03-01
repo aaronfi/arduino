@@ -8,7 +8,7 @@
 CustomCRGBArray<NUM_LEDS> leds;
 const int ROWS = 32;
 const int COLS = 32;
-const int MAX_GEN = 200;
+const int MAX_GEN = 2000;
 int remaining_showcase_count;
 bool board[ROWS][COLS];
 int prevBoard[ROWS];
@@ -126,7 +126,7 @@ bool shouldKeepGoing(int gen) {
     remaining_showcase_count--;
     return (remaining_showcase_count > 0);
   } else {
-    return true; // gen < MAX_GEN;
+    return gen < MAX_GEN;  // to allow indefinite generations, replace this here line with:  return true;
   }
 }
 
