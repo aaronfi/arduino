@@ -45,18 +45,30 @@ void printBoard(bool board[][COLS])
     }
 }
 
-int countNeighbors(bool board[][COLS], int row, int col)
+int countNeighbors(bool board[][COLS], int row, int col) 
 {
+    // row represents the vertical position (Y-axis), col the horizontal (X-axis)
+    // decreasing row moves up (North)
+    // increasing row moves down (South)
+    // decreasing col moves left (West)
+    // increasing col moves right (East)
+
     int count = 0;
-    for (int i = row - 1; i <= row + 1; i++) {
-        for (int j = col - 1; j <= col + 1; j++) {
-            if (i >= 0 && i < ROWS && j >= 0 && j < COLS) {
-                if (i != row || j != col) {
-                    count += board[i][j];
-                }
-            }
-        }
-    }
+
+    // Precompute boundary conditions
+    int r0 = row > 0,        r1 = row < ROWS - 1;
+    int c0 = col > 0,        c1 = col < COLS - 1;
+
+    // Check each neighbor, avoiding out-of-bounds access
+    count += r0 && c0  ? board[row - 1][col - 1] : 0; // NW (↖)
+    count += r0        ? board[row - 1][col]     : 0; // N  (↑)
+    count += r0 && c1  ? board[row - 1][col + 1] : 0; // NE (↗)
+    count += c0        ? board[row][col - 1]     : 0; // W  (←)
+    count += c1        ? board[row][col + 1]     : 0; // E  (→)
+    count += r1 && c0  ? board[row + 1][col - 1] : 0; // SW (↙)
+    count += r1        ? board[row + 1][col]     : 0; // S  (↓)
+    count += r1 && c1  ? board[row + 1][col + 1] : 0; // SE (↘)
+
     return count;
 }
 
