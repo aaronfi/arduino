@@ -17,7 +17,7 @@ class Picture {
     this->width = width;
     this->height = height;
     this->x = x;
-    this->y = x;
+    this->y = y;
     this->x_offset = x_offset;
     this->y_offset = y_offset;
     this->isBitmask = isBitmask;
